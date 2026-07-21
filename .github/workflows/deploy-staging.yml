@@ -7,4 +7,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.*.name, 'stage')
+    if: contains(github.event.pull_request.labels.*.name, 'stage')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Test Step
+        run: |
+          echo "Staging Workflow"
+          echo "Deploy to Azure"
