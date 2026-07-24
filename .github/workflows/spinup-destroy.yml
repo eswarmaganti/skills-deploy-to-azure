@@ -53,10 +53,10 @@ jobs:
         if: success()
         run: |
           az webapp config container set \
-            --docker-custom-image-name nginx \
-            --docker-registry-server-password ${{ secrets.CR_PAT }} \
-            --docker-registry-server-url https://${{ env.IMAGE_REGISTRY_URL }} \
-            --docker-registry-server-user ${{ github.actor }} \
+            --container-image-name nginx \
+            --container-registry-url https://${{ env.IMAGE_REGISTRY_URL }} \
+            --container-registry-user ${{ github.actor }} \
+            --container-registry-password ${{ secrets.CR_PAT }} \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
