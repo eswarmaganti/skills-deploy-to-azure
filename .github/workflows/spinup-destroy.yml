@@ -8,7 +8,7 @@ env:
   IMAGE_REGISTRY_URL: ghcr.io
   AZURE_RESOURCE_GROUP: cd-with-actions
   AZURE_APP_PLAN: actions-ttt-deployment
-  AZURE_LOCATION: '"East US"'
+  AZURE_LOCATION: '"West US 2"'
   AZURE_WEBAPP_NAME: eswarmaganti-ttt-app
 
 jobs:
@@ -38,25 +38,25 @@ jobs:
           az appservice plan create \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --name ${{ env.AZURE_APP_PLAN }} --is-linux --sku F1 \
+            --location ${{ env.AZURE_LOCATION }} \
             --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      
       - name: Create webapp resource
         if: success()
         run: |
           az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --plan ${{ env.AZURE_APP_PLAN }} \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
-            --deployment-container-image-name nginx
+            --deployment-container-image-name nginx \
             --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         
       - name: Configure webapp to use GHCR
         if: success()
         run: |
           az webapp config container set \
-            --docker-custom-image-name nginx \
-            --docker-registry-server-password ${{ secrets.CR_PAT }} \
-            --docker-registry-server-url https://${{ env.IMAGE_REGISTRY_URL }}
-            --docker-registry-server-user ${{ github.actor }} \
+            --container-image-name nginx \
+            --container-registry-url https://${{ env.IMAGE_REGISTRY_URL }} \
+            --container-registry-user ${{ github.actor }} \
+            --container-registry-password ${{ secrets.CR_PAT }} \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
