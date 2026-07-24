@@ -38,15 +38,15 @@ jobs:
           az appservice plan create \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --name ${{ env.AZURE_APP_PLAN }} --is-linux --sku F1 \
+            --location ${{ env.AZURE_LOCATION }} \
             --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      
       - name: Create webapp resource
         if: success()
         run: |
           az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --plan ${{ env.AZURE_APP_PLAN }} \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
-            --deployment-container-image-name nginx
+            --deployment-container-image-name nginx \
             --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         
       - name: Configure webapp to use GHCR
